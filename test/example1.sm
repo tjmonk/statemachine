@@ -1,0 +1,57 @@
+# Simple ON/OFF state machine
+
+statemachine {
+    name: "OnOffTest"
+    description: "On/Off Test State Machine"
+
+    state init {
+        entry {
+            create timer 1 2000;
+        }
+
+        transition {
+            on: timer 1
+        }
+
+        exit {
+        }
+    }
+
+    # in the on state, the /sys/test/a value is one
+    state on {
+        entry {
+            # create a timer that will expire in 2 seconds
+            create timer 1 2000;
+            /sys/test/a = 1;
+        }
+
+        transition {
+            # transition to the off state when the timer expires
+            off: timer 1
+        }
+
+        exit {
+            # delete the timer
+            delete timer 1;
+        }
+    }
+
+    # in the off state, the /sys/test/a value is zero
+    state off {
+        entry {
+            # create a timer that will expire in 2 seconds
+            create timer 1 2000;
+            /sys/test/a = 0;
+        }
+
+        transition {
+            # transition to the 'on' state when the timer expires
+            on: timer 1
+        }
+
+        exit {
+            # delete the timer
+            delete timer 1;
+        }
+    }
+}
