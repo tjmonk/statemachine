@@ -25,7 +25,7 @@ $ ./build.sh &
 State Machines are defined using a C-like scripting language.
 Each invocation of the state machine engine can load one state machine.
 
-The state machine definition is contained withing a "statemachine" statement.
+The state machine definition is contained within a "statemachine" statement.
 The statemachine has a name and description attribute, which are both
 strings.
 
@@ -95,7 +95,7 @@ See below for a description and examples of the scripting langauge.
 
 ### Transitions
 
-Transitions specify the conditions underwhich the statemachine will transition
+Transitions specify the conditions under which the statemachine will transition
 to a new state.  A transition block can contain one or more transitions.
 Each transition starts with an identifier - the name of the transition target
 state, followed by a colon, follwed by an expression.
@@ -206,10 +206,15 @@ For example,
 ### Timers
 
 Special script commands exists to perform timer management.  Two types of timers
-exist:  a one-shot timer which fires once and stops, and a repeating tick
-timer which fires on an interval.  Each timer has a number so it can be
-referenced after it is created.  Up to 255 timers can exist within a
-statemachine.   Timer intervals are specified in milliseconds.
+exist:
+
+- a one-shot timer which fires once and stops, and
+- a repeating tick timer which fires on an interval.
+
+Each timer has a number so it can be referenced after it is created.
+Up to 255 timers can exist within a statemachine.   Timer intervals are
+specified in milliseconds.
+
 Timer intervals can also be specified via a variable name.
 
 Examples of timer management functions are shown below:
