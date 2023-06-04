@@ -1,0 +1,112 @@
+# Simple home alarm system
+
+statemachine {
+    name: "Alarm System"
+    description: "Simple Home Alarm system"
+
+    state init {
+        entry {
+            # initialize all variables
+            /sys/alarm/armed = 0;
+            create timer 1 100;
+        }
+
+        transition {
+            disarmed: timer 1
+        }
+
+        exit {
+            delete timer 1;
+        }
+    }
+
+    # in the disarmed state any change to the intrusion state
+    # will have no effect.
+    state disarmed {
+        entry {
+            /sys/alarm/siren = 0;
+            /sys/alarm/armed = 0;
+        }
+
+        transition {
+            # transition to the off state when the timer expires
+            arming: /sys/alarm/activate == 1
+        }
+
+        exit {
+        }
+    }
+
+    # in the arming state we wait for the arming delay or transition
+    # back to the disarmed state if the user deactivates the alarm
+    state arming {
+        entry {
+            int armdelay;
+
+            armdelay = /sys/alarm/arm_delay * 1000;
+            create timer 1 armdelay;
+        }
+
+        transition {
+            # transition to the 'armed' state when the timer expires
+            armed: timer 1
+
+            # transition back to disarmed if we deactivate the alarm
+            # before the arming delay completes
+            disarmed: /sys/alarm/activate == 0
+        }
+
+        exit {
+            # delete the timer
+            delete timer 1;
+        }
+    }
+
+    # in the armed state, if intrusion is detected an alarm will sound
+    # deactivation of the alarm will put us back into the disarmed state
+    state armed {
+        entry {
+            /sys/alarm/armed = 1;
+        }
+
+        transition {
+            # transition to the 'alarm' state if intrusion detected
+            alarm: /sys/alarm/trigger == 1
+
+            # transition back to disarmed if we deactivate the alarm
+            disarmed: /sys/alarm/activate == 0
+        }
+
+        exit {
+        }
+    }
+
+    # in the alarm state, the siren is activated for 60 seconds
+    # the siren can be silenced and the alarm disarmed by deactivating
+    # the alarm
+    state alarm {
+        entry {
+            # turn the siren on
+            /sys/alarm/siren = 1;
+
+            # create a timer for 60 seconds
+            create timer 1 60000;
+        }
+
+        transition {
+            # go back to armed state when timer expires
+            armed: timer 1
+
+            # go to disarmed state if user deactivates the alarm
+            disarmed: /sys/alarm/activate == 0
+        }
+
+        exit {
+            # turn off the siren when we exit this state
+            /sys/alarm/siren = 0;
+
+            # delete the timer on exit
+            delete timer 1;
+        }
+    }
+}

@@ -514,6 +514,11 @@ static int EnterState( StateMachine *pStateMachine, char *targetState )
         pState = FindState( pStateMachine, targetState );
         if( pState != NULL )
         {
+            if ( pStateMachine->verbose )
+            {
+                fprintf( stdout, "Enter State: %s\n", pState->id );
+            }
+
             pStateMachine->pCurrentState = pState;
             entry = pState->entry;
             if( entry != NULL )
@@ -574,6 +579,11 @@ static int ExitState( StateMachine *pStateMachine )
         pState = pStateMachine->pCurrentState;
         if ( pState != NULL )
         {
+            if ( pStateMachine->verbose )
+            {
+                fprintf( stdout, "Exit State: %s\n", pState->id );
+            }
+
             exit = pState->exit;
             if ( exit != NULL )
             {
