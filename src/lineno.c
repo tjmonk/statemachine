@@ -54,7 +54,7 @@ static int lineno = 0;
 
     The getlineno function returns the current line number being parsed
 
-@return the current line number being parsed
+    @return the current line number being parsed
 
 ==============================================================================*/
 int getlineno( void )
