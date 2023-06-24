@@ -9,8 +9,6 @@ include(GNUInstallDirs)
 
 find_package(BISON)
 find_package(FLEX)
-find_library( LIB_VARSERVER varserver REQUIRED )
-find_library( LIB_VARACTION varaction REQUIRED )
 
 FLEX_TARGET( TCC_Scanner src/lexan.l ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c )
 BISON_TARGET( TCC_Parser src/statemachine.y ${CMAKE_CURRENT_BINARY_DIR}/statemachine.tab.c )
@@ -28,8 +26,8 @@ add_executable( ${PROJECT_NAME}
 target_link_libraries( ${PROJECT_NAME}
 	${CMAKE_THREAD_LIBS_INIT}
 	rt
-	${LIB_VARSERVER}
-    ${LIB_VARACTION}
+	varserver
+    varaction
 )
 
 target_include_directories( ${PROJECT_NAME} PRIVATE
